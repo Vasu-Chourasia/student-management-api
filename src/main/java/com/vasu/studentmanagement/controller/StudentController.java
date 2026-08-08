@@ -1,15 +1,16 @@
 package com.vasu.studentmanagement.controller;
 
-import com.vasu.studentmanagement.entity.Student;
+import com.vasu.studentmanagement.dto.StudentRequestDTO;
+import com.vasu.studentmanagement.dto.StudentResponseDTO;
 import com.vasu.studentmanagement.service.StudentService;
-import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/students")
@@ -22,33 +23,65 @@ public class StudentController {
     }
 
     @PostMapping
-    public ResponseEntity<Student>   addStudent(@Valid @RequestBody Student student) {
-        Student savedStudent = studentService.addStudent(student);
+    public ResponseEntity<StudentResponseDTO> addStudent(
+            @Valid @RequestBody StudentRequestDTO request) {
 
-        return new ResponseEntity<>(savedStudent, HttpStatus.CREATED);
+        StudentResponseDTO response =
+                studentService.addStudent(request);
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.CREATED
+        );
     }
 
     @GetMapping
-    public ResponseEntity<List<Student>> getAllStudents() {
-        return ResponseEntity.ok(studentService.getAllStudents());
+    public ResponseEntity<Page<StudentResponseDTO>> getAllStudents(
+            @RequestParam(required = false) String department,
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) Integer age,
+            @RequestParam(required = false) Integer minAge,
+            @RequestParam(required = false) Integer maxAge,
+            Pageable pageable) {
+
+        return ResponseEntity.ok(
+                studentService.getAllStudents(
+                        department,
+                        name,
+                        age,
+                        minAge,
+                        maxAge,
+                        pageable
+                )
+        );
     }
 
     @GetMapping("/{id}")
-    public Student getStudentById(@PathVariable Long id) {
-        return studentService.getStudentById(id);
+    public ResponseEntity<StudentResponseDTO> getStudentById(
+            @PathVariable Long id) {
+
+        return ResponseEntity.ok(
+                studentService.getStudentById(id)
+        );
     }
 
     @PutMapping("/{id}")
-    public Student updateStudent(
+    public ResponseEntity<StudentResponseDTO> updateStudent(
             @PathVariable Long id,
-            @RequestBody Student student) {
+            @Valid @RequestBody StudentRequestDTO request) {
 
-        return studentService.updateStudent(id, student);
+        StudentResponseDTO response =
+                studentService.updateStudent(id, request);
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStudent(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStudent(
+            @PathVariable Long id) {
+
         studentService.deleteStudent(id);
+
         return ResponseEntity.noContent().build();
     }
 }

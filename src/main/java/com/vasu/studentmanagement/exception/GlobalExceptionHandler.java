@@ -44,4 +44,19 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(DuplicateStudentException.class)
+    public ResponseEntity<Map<String, Object>> handleDuplicateStudent(
+            DuplicateStudentException exception) {
+
+        Map<String, Object> response = new HashMap<>();
+
+        response.put("status", 409);
+        response.put("message", exception.getMessage());
+
+        return new ResponseEntity<>(
+                response,
+                HttpStatus.CONFLICT
+        );
+    }
 }

@@ -5,10 +5,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-
 @Entity
 public class Student {
 
@@ -16,28 +12,20 @@ public class Student {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
     private String rollNumber;
 
-    @NotBlank
     private String name;
 
-    @NotBlank
-    @Email
     private String email;
 
-    @NotBlank
     private String phone;
 
-    @Min(16)
     private int age;
 
-    @NotBlank
     private String department;
 
-    // No-Argument Constructor (Required by Hibernate)
+    // No-Argument Constructor
     public Student() {
-
     }
 
     // Parameterized Constructor
@@ -107,8 +95,6 @@ public class Student {
     public void setDepartment(String department) {
         this.department = department;
     }
-
-    // toString()
 
     @Override
     public String toString() {
